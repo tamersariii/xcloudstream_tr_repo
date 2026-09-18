@@ -10,9 +10,11 @@ buildscript {
         maven("https://jitpack.io")
     }
     dependencies {
+        // AGP 8.7.3 → minimum Gradle 8.9 gerektirir
         classpath("com.android.tools.build:gradle:8.7.3")
         classpath("com.github.recloudstream:gradle:-SNAPSHOT")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.0")
+        // Kotlin 2.1.0, AGP 8.7.3 ile uyumlu stabil sürüm
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0")
     }
 }
 
@@ -23,9 +25,6 @@ allprojects {
         maven("https://jitpack.io")
     }
 }
-
-// ✅ DÜZELTİLMİŞ YARDIMCI FONKSİYONLAR
-// extensions.getByName() "Any" döndüğü için açıkça cast edip .apply() ile lambda'yı çalıştırıyoruz.
 
 fun Project.cloudstream(configuration: CloudstreamExtension.() -> Unit) =
     (extensions.getByName("cloudstream") as CloudstreamExtension).apply(configuration)
@@ -52,14 +51,15 @@ subprojects {
         }
 
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_1_8
-            targetCompatibility = JavaVersion.VERSION_1_8
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
         }
     }
 
     tasks.withType<KotlinJvmCompile> {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_1_8)
+            // AGP 8.7.x ile JDK 17 hedefi zorunludur
+            jvmTarget.set(JvmTarget.JVM_17)
             freeCompilerArgs.addAll(
                 "-Xno-call-assertions",
                 "-Xno-param-assertions",

@@ -24,6 +24,7 @@ allprojects {
     }
 }
 
+// CloudStream ve Android extension'larına kısayol erişimi
 fun Project.cloudstream(configuration: CloudstreamExtension.() -> Unit) =
     extensions.getByName("cloudstream").configuration()
 
@@ -40,25 +41,28 @@ subprojects {
     }
 
     android {
-        namespace = "com.xcloudstream"
+        namespace = "com.xcloudstream.${project.name.lowercase().replace("-", "")}"
+        compileSdkVersion(35)
+
         defaultConfig {
             minSdk = 21
-            compileSdkVersion(35)
             targetSdk = 35
         }
+
         compileOptions {
             sourceCompatibility = JavaVersion.VERSION_1_8
             targetCompatibility = JavaVersion.VERSION_1_8
         }
-        tasks.withType<KotlinJvmCompile> {
-            compilerOptions {
-                jvmTarget.set(JvmTarget.JVM_1_8)
-                freeCompilerArgs.addAll(
-                    "-Xno-call-assertions",
-                    "-Xno-param-assertions",
-                    "-Xno-receiver-assertions"
-                )
-            }
+    }
+
+    tasks.withType<KotlinJvmCompile> {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_1_8)
+            freeCompilerArgs.addAll(
+                "-Xno-call-assertions",
+                "-Xno-param-assertions",
+                "-Xno-receiver-assertions"
+            )
         }
     }
 
@@ -74,6 +78,6 @@ subprojects {
     }
 }
 
-task("clean") {
+tasks.register("clean", Delete::class) {
     delete(rootProject.layout.buildDirectory)
 }

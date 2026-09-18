@@ -9,26 +9,19 @@ permissions:
   contents: write
 
 env:
-  # GitHub Actions'ın tüm JavaScript tabanlı action'ları Node.js 24 ile çalıştırmasını zorlar.
-  # Node.js 20 desteği kaldırıldığı için bu satır kritik.
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   build:
-    # ubuntu-latest, 19 Ekim 2026'dan itibaren Ubuntu 26'ya geçecek.
-    # Geçiş sırasında kırılma yaşamamak için sürümü açıkça sabitliyoruz.
-    # Ubuntu 26 çıktığında: ubuntu-26.04 yapabilirsiniz.
     runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
-        # v5, Node.js 24 runtime kullanır (v4 node20 kullanıyordu)
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Set up JDK 17
-        # v4 kullanımdan kaldırıldı; v5 Node.js 24 destekler
         uses: actions/setup-java@v5
         with:
           java-version: '17'
@@ -41,7 +34,6 @@ jobs:
         run: ./gradlew makePluginsJson
 
       - name: Deploy to builds branch
-        # peaceiris/actions-gh-pages@v4, Node.js 24 ile uyumludur.
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

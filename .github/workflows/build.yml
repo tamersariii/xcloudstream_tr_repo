@@ -31,21 +31,85 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build all plugins
-        run: ./gradlew make makePluginsJson
+        run: ./gradlew make makePluginsJson --stacktrace
 
       - name: Verify builds directory
+        if: always()
         run: |
-          echo "=== builds/ klasörü içeriği ==="
-          if [ -d "builds" ]; then
-            ls -la builds/
+          echo "=========================================="
+          echo "=== KÖK DİZİN İÇERİĞİ ==="
+          echo "=========================================="
+          ls -la
+          echo ""
+          echo "=========================================="
+          echo "=== build/ KLASÖRÜ ==="
+          echo "=========================================="
+          ls -la build/ 2>/dev/null || echo "build/ klasörü yok"
+          echo ""
+          echo "=========================================="
+          echo "=== builds/ KLASÖRÜ ==="
+          echo "=========================================="
+          ls -la builds/ 2>/dev/null || echo "builds/ klasörü yok"
+          echo ""
+          echo "=========================================="
+          echo "=== TÜM .cs DOSYALARI ==="
+          echo "=========================================="
+          find . -name "*.cs" -type f 2>/dev/null || echo ".cs dosyası bulunamadı"
+          echo ""
+          echo "=========================================="
+          echo "=== TÜM plugins.json DOSYALARI ==="
+          echo "=========================================="
+          find . -name "plugins.json" -type f 2>/dev/null || echo "plugins.json bulunamadı"
+          echo ""
+          echo "=========================================="
+          echo "=== build/plugins.json İÇERİĞİ ==="
+          echo "=========================================="
+          if [ -f "build/plugins.json" ]; then
+            cat build/plugins.json
+            echo ""
+            echo "--- Dosya boyutu: ---"
+            wc -c build/plugins.json
           else
-            echo "HATA: builds klasörü oluşturulmamış!"
-            find . -name "*.cs" -type f
-            find . -name "plugins.json" -type f
+            echo "build/plugins.json yok"
+          fi
+          echo ""
+          echo "=========================================="
+          echo "=== builds/plugins.json İÇERİĞİ ==="
+          echo "=========================================="
+          if [ -f "builds/plugins.json" ]; then
+            cat builds/plugins.json
+            echo ""
+            echo "--- Dosya boyutu: ---"
+            wc -c builds/plugins.json
+          else
+            echo "builds/plugins.json yok"
+          fi
+          echo ""
+          echo "=========================================="
+          echo "=== GRADLE'IN GÖRDÜĞÜ MODÜLLER ==="
+          echo "=========================================="
+          ./gradlew projects --console=plain 2>&1 | head -50 || echo "gradlew projects çalışmadı"
+          echo ""
+          echo "=========================================="
+          echo "=== HER MODÜLÜN BUILD KLASÖRÜ ==="
+          echo "=========================================="
+          for dir in HDFilmCehennemi FullHDFilmizlesene FilmMakinesi UltraFilmizle HDFilmizle FilmKutusu HDFilmizlesende; do
+            echo "--- $dir/build/ ---"
+            ls -la "$dir/build/" 2>/dev/null || echo "$dir/build/ yok"
+            echo ""
+          done
+
+      - name: Check builds directory exists
+        run: |
+          if [ ! -d "builds" ]; then
+            echo "❌ HATA: builds/ klasörü oluşmadı!"
+            echo "Yukarıdaki 'Verify builds directory' adımının çıktısını inceleyin."
             exit 1
           fi
+          echo "✅ builds/ klasörü mevcut."
 
       - name: Deploy to builds branch
+        if: success()
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

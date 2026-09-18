@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+# Builds dalına push edebilmek için gerekli izinler
 permissions:
   contents: write
 
@@ -13,6 +14,7 @@ env:
 
 jobs:
   build:
+    # Ubuntu 24.04, mevcut en kararlı sürümdür
     runs-on: ubuntu-24.04
 
     steps:

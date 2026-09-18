@@ -1,0 +1,8 @@
+{
+  "name": "xCloudStream TR Repo",
+  "description": "Türkçe film ve dizi siteleri için CloudStream eklentileri",
+  "manifestVersion": 1,
+  "pluginLists": [
+    "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/plugins.json"
+  ]
+}

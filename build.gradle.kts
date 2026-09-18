@@ -10,11 +10,10 @@ buildscript {
         maven("https://jitpack.io")
     }
     dependencies {
-        // AGP 8.7.3 → minimum Gradle 8.9 gerektirir
         classpath("com.android.tools.build:gradle:8.7.3")
         classpath("com.github.recloudstream:gradle:-SNAPSHOT")
-        // Kotlin 2.1.0, AGP 8.7.3 ile uyumlu stabil sürüm
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0")
+        // ✅ KOTLIN 2.4.0 — CloudStream kütüphanesinin metadata'sını okuyabilmek için zorunlu
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.0")
     }
 }
 
@@ -58,7 +57,6 @@ subprojects {
 
     tasks.withType<KotlinJvmCompile> {
         compilerOptions {
-            // AGP 8.7.x ile JDK 17 hedefi zorunludur
             jvmTarget.set(JvmTarget.JVM_17)
             freeCompilerArgs.addAll(
                 "-Xno-call-assertions",

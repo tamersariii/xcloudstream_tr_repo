@@ -1,4 +1,4 @@
-name: Build CloudStream Plugins (Beta)
+name: Build CloudStream Plugins
 
 on:
   push:
@@ -44,7 +44,7 @@ jobs:
 
       - name: Generate plugins.json
         run: |
-          API_VERSION=4
+          API_VERSION=1
           cat > builds/plugins.json << EOF
           [
             {
@@ -149,8 +149,8 @@ jobs:
           echo "=== builds/ içeriği ==="
           ls -la builds/
           echo ""
-          echo "=== plugins.json ilk 5 satır ==="
-          head -5 builds/plugins.json
+          echo "=== plugins.json ilk 3 satır ==="
+          head -3 builds/plugins.json
 
       - name: Deploy to builds branch
         if: success()

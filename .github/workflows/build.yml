@@ -1,19 +1,22 @@
-name: Diagnose Build
+name: Build Plugins
 
 on:
-  workflow_dispatch:
   push:
     branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
-  diagnose:
+  build:
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
@@ -24,34 +27,46 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Grant execute permission
+      - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: TEST A - Compile only HDFilmCehennemi
-        continue-on-error: true
-        run: ./gradlew :HDFilmCehennemi:assembleDebug --stacktrace --console=plain 2>&1 | tail -80
+      - name: Build all plugins (assembleDebug)
+        run: ./gradlew assembleDebug --stacktrace
 
-      - name: TEST B - Run make on HDFilmCehennemi
-        continue-on-error: true
-        run: ./gradlew :HDFilmCehennemi:make --info --console=plain 2>&1 | tail -120
+      - name: Convert .aar to .cs files
+        run: |
+          mkdir -p builds
+          echo "=== .aar dosyalarını .cs olarak kopyalıyorum ==="
+          find . -path "*/build/outputs/aar/*-debug.aar" -type f | while read aar; do
+            module_name=$(echo "$aar" | sed 's|^\./||' | sed 's|/build/outputs/aar/.*||')
+            cp "$aar" "builds/${module_name}.cs"
+            echo "✓ $module_name → builds/${module_name}.cs"
+          done
+          echo ""
+          echo "=== builds/ içeriği ==="
+          ls -la builds/
 
-      - name: TEST C - Show all files
+      - name: Generate plugins.json
+        run: ./gradlew makePluginsJson --stacktrace || true
+
+      - name: Verify builds directory
         if: always()
         run: |
-          echo "=== HDFilmCehennemi/build/ ==="
-          find HDFilmCehennemi/build -type f 2>/dev/null | head -40 || echo "YOK"
+          echo "=== builds/ ==="
+          ls -la builds/
           echo ""
-          echo "=== Tüm .cs ==="
-          find . -name "*.cs" 2>/dev/null || echo "YOK"
-          echo ""
-          echo "=== Tüm .jar (build altında) ==="
-          find . -path "*/build/*" -name "*.jar" 2>/dev/null || echo "YOK"
-          echo ""
-          echo "=== Kotlin kaynak dosyaları ==="
-          find . -name "*.kt" -not -path "*/build/*" 2>/dev/null
-          echo ""
-          echo "=== AndroidManifest.xml dosyaları ==="
-          find . -name "AndroidManifest.xml" -not -path "*/build/*" 2>/dev/null
-          echo ""
-          echo "=== strings.xml dosyaları ==="
-          find . -name "strings.xml" -not -path "*/build/*" 2>/dev/null
+          echo "=== build/plugins.json ==="
+          cat build/plugins.json 2>/dev/null || echo "build/plugins.json YOK"
+
+      - name: Deploy to builds branch
+        if: success()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./builds
+          publish_branch: builds
+          force_orphan: true
+          enable_jekyll: false
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Build: ${{ github.event.head_commit.message }}'

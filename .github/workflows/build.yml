@@ -30,6 +30,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Clean previous builds
+        run: ./gradlew clean
+
       - name: Build all plugins
         run: ./gradlew make makePluginsJson --stacktrace
 
@@ -37,76 +40,35 @@ jobs:
         if: always()
         run: |
           echo "=========================================="
-          echo "=== KÖK DİZİN İÇERİĞİ ==="
-          echo "=========================================="
+          echo "=== KÖK DİZİN ==="
           ls -la
           echo ""
           echo "=========================================="
-          echo "=== build/ KLASÖRÜ ==="
-          echo "=========================================="
-          ls -la build/ 2>/dev/null || echo "build/ klasörü yok"
-          echo ""
-          echo "=========================================="
           echo "=== builds/ KLASÖRÜ ==="
-          echo "=========================================="
-          ls -la builds/ 2>/dev/null || echo "builds/ klasörü yok"
+          ls -la builds/ 2>/dev/null || echo "builds/ YOK"
           echo ""
           echo "=========================================="
           echo "=== TÜM .cs DOSYALARI ==="
-          echo "=========================================="
-          find . -name "*.cs" -type f 2>/dev/null || echo ".cs dosyası bulunamadı"
+          find . -name "*.cs" -type f 2>/dev/null || echo ".cs YOK"
           echo ""
           echo "=========================================="
-          echo "=== TÜM plugins.json DOSYALARI ==="
-          echo "=========================================="
-          find . -name "plugins.json" -type f 2>/dev/null || echo "plugins.json bulunamadı"
+          echo "=== TÜM plugins.json ==="
+          find . -name "plugins.json" -type f 2>/dev/null
+          echo ""
+          echo "=== build/plugins.json içeriği ==="
+          cat build/plugins.json 2>/dev/null || echo "yok"
           echo ""
           echo "=========================================="
-          echo "=== build/plugins.json İÇERİĞİ ==="
-          echo "=========================================="
-          if [ -f "build/plugins.json" ]; then
-            cat build/plugins.json
-            echo ""
-            echo "--- Dosya boyutu: ---"
-            wc -c build/plugins.json
-          else
-            echo "build/plugins.json yok"
-          fi
-          echo ""
-          echo "=========================================="
-          echo "=== builds/plugins.json İÇERİĞİ ==="
-          echo "=========================================="
-          if [ -f "builds/plugins.json" ]; then
-            cat builds/plugins.json
-            echo ""
-            echo "--- Dosya boyutu: ---"
-            wc -c builds/plugins.json
-          else
-            echo "builds/plugins.json yok"
-          fi
-          echo ""
-          echo "=========================================="
-          echo "=== GRADLE'IN GÖRDÜĞÜ MODÜLLER ==="
-          echo "=========================================="
-          ./gradlew projects --console=plain 2>&1 | head -50 || echo "gradlew projects çalışmadı"
-          echo ""
-          echo "=========================================="
-          echo "=== HER MODÜLÜN BUILD KLASÖRÜ ==="
-          echo "=========================================="
-          for dir in HDFilmCehennemi FullHDFilmizlesene FilmMakinesi UltraFilmizle HDFilmizle FilmKutusu HDFilmizlesende; do
-            echo "--- $dir/build/ ---"
-            ls -la "$dir/build/" 2>/dev/null || echo "$dir/build/ yok"
-            echo ""
-          done
+          echo "=== GRADLE MODÜLLERİ ==="
+          ./gradlew projects --console=plain 2>&1 | head -40
 
-      - name: Check builds directory exists
+      - name: Check builds exists
         run: |
           if [ ! -d "builds" ]; then
-            echo "❌ HATA: builds/ klasörü oluşmadı!"
-            echo "Yukarıdaki 'Verify builds directory' adımının çıktısını inceleyin."
+            echo "❌ builds/ oluşmadı!"
             exit 1
           fi
-          echo "✅ builds/ klasörü mevcut."
+          echo "✅ builds/ mevcut"
 
       - name: Deploy to builds branch
         if: success()

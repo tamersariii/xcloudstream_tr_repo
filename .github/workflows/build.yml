@@ -44,101 +44,101 @@ jobs:
 
       - name: Generate plugins.json
         run: |
-          # CloudStream Beta sürümü için API versiyonu
           API_VERSION=4
-          
           cat > builds/plugins.json << EOF
-          {
-            "name": "xCloudStream TR Repo",
-            "description": "Türkçe film ve dizi siteleri için CloudStream eklentileri",
-            "manifestVersion": 1,
-            "plugins": [
-              {
-                "internalName": "HDFilmCehennemi",
-                "url": "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/HDFilmCehennemi.cs",
-                "version": 1,
-                "description": "HDFilmCehennemi.nl üzerinden film ve dizi izleme",
-                "authors": ["tamersariii"],
-                "tvTypes": ["Movie", "TvSeries"],
-                "language": "tr",
-                "iconUrl": "https://www.hdfilmcehennemi.nl/favicon.ico",
-                "apiVersion": ${API_VERSION},
-                "status": 1
-              },
-              {
-                "internalName": "FullHDFilmizlesene",
-                "url": "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/FullHDFilmizlesene.cs",
-                "version": 1,
-                "description": "FullHDFilmizlesene.now üzerinden film izleme",
-                "authors": ["tamersariii"],
-                "tvTypes": ["Movie"],
-                "language": "tr",
-                "iconUrl": "https://www.fullhdfilmizlesene.now/favicon.ico",
-                "apiVersion": ${API_VERSION},
-                "status": 1
-              },
-              {
-                "internalName": "FilmMakinesi",
-                "url": "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/FilmMakinesi.cs",
-                "version": 1,
-                "description": "FilmMakinesi.to üzerinden film ve dizi izleme",
-                "authors": ["tamersariii"],
-                "tvTypes": ["Movie", "TvSeries"],
-                "language": "tr",
-                "iconUrl": "https://filmmakinesi.to/favicon.ico",
-                "apiVersion": ${API_VERSION},
-                "status": 1
-              },
-              {
-                "internalName": "UltraFilmizle",
-                "url": "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/UltraFilmizle.cs",
-                "version": 1,
-                "description": "UltraFilmizle.org üzerinden film izleme",
-                "authors": ["tamersariii"],
-                "tvTypes": ["Movie"],
-                "language": "tr",
-                "iconUrl": "https://ultrafilmizle.org/favicon.ico",
-                "apiVersion": ${API_VERSION},
-                "status": 1
-              },
-              {
-                "internalName": "HDFilmizle",
-                "url": "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/HDFilmizle.cs",
-                "version": 1,
-                "description": "HDFilmizle.vip üzerinden film ve dizi izleme",
-                "authors": ["tamersariii"],
-                "tvTypes": ["Movie", "TvSeries"],
-                "language": "tr",
-                "iconUrl": "https://www.hdfilmizle.vip/favicon.ico",
-                "apiVersion": ${API_VERSION},
-                "status": 1
-              },
-              {
-                "internalName": "FilmKutusu",
-                "url": "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/FilmKutusu.cs",
-                "version": 1,
-                "description": "FilmKutusu.com üzerinden film izleme",
-                "authors": ["tamersariii"],
-                "tvTypes": ["Movie"],
-                "language": "tr",
-                "iconUrl": "https://filmkutusu.com/favicon.ico",
-                "apiVersion": ${API_VERSION},
-                "status": 1
-              },
-              {
-                "internalName": "HDFilmizlesende",
-                "url": "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/HDFilmizlesende.cs",
-                "version": 1,
-                "description": "HDFilmizlesende.com üzerinden film ve dizi izleme",
-                "authors": ["tamersariii"],
-                "tvTypes": ["Movie", "TvSeries"],
-                "language": "tr",
-                "iconUrl": "https://hdfilmizlesende.com/favicon.ico",
-                "apiVersion": ${API_VERSION},
-                "status": 1
-              }
-            ]
-          }
+          [
+            {
+              "internalName": "HDFilmCehennemi",
+              "url": "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/HDFilmCehennemi.cs",
+              "version": 1,
+              "description": "HDFilmCehennemi.nl üzerinden film ve dizi izleme",
+              "authors": ["tamersariii"],
+              "tvTypes": ["Movie", "TvSeries"],
+              "language": "tr",
+              "iconUrl": "https://www.hdfilmcehennemi.nl/favicon.ico",
+              "apiVersion": ${API_VERSION},
+              "status": 1,
+              "repositoryUrl": "https://github.com/tamersariii/xcloudstream_tr_repo"
+            },
+            {
+              "internalName": "FullHDFilmizlesene",
+              "url": "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/FullHDFilmizlesene.cs",
+              "version": 1,
+              "description": "FullHDFilmizlesene.now üzerinden film izleme",
+              "authors": ["tamersariii"],
+              "tvTypes": ["Movie"],
+              "language": "tr",
+              "iconUrl": "https://www.fullhdfilmizlesene.now/favicon.ico",
+              "apiVersion": ${API_VERSION},
+              "status": 1,
+              "repositoryUrl": "https://github.com/tamersariii/xcloudstream_tr_repo"
+            },
+            {
+              "internalName": "FilmMakinesi",
+              "url": "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/FilmMakinesi.cs",
+              "version": 1,
+              "description": "FilmMakinesi.to üzerinden film ve dizi izleme",
+              "authors": ["tamersariii"],
+              "tvTypes": ["Movie", "TvSeries"],
+              "language": "tr",
+              "iconUrl": "https://filmmakinesi.to/favicon.ico",
+              "apiVersion": ${API_VERSION},
+              "status": 1,
+              "repositoryUrl": "https://github.com/tamersariii/xcloudstream_tr_repo"
+            },
+            {
+              "internalName": "UltraFilmizle",
+              "url": "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/UltraFilmizle.cs",
+              "version": 1,
+              "description": "UltraFilmizle.org üzerinden film izleme",
+              "authors": ["tamersariii"],
+              "tvTypes": ["Movie"],
+              "language": "tr",
+              "iconUrl": "https://ultrafilmizle.org/favicon.ico",
+              "apiVersion": ${API_VERSION},
+              "status": 1,
+              "repositoryUrl": "https://github.com/tamersariii/xcloudstream_tr_repo"
+            },
+            {
+              "internalName": "HDFilmizle",
+              "url": "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/HDFilmizle.cs",
+              "version": 1,
+              "description": "HDFilmizle.vip üzerinden film ve dizi izleme",
+              "authors": ["tamersariii"],
+              "tvTypes": ["Movie", "TvSeries"],
+              "language": "tr",
+              "iconUrl": "https://www.hdfilmizle.vip/favicon.ico",
+              "apiVersion": ${API_VERSION},
+              "status": 1,
+              "repositoryUrl": "https://github.com/tamersariii/xcloudstream_tr_repo"
+            },
+            {
+              "internalName": "FilmKutusu",
+              "url": "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/FilmKutusu.cs",
+              "version": 1,
+              "description": "FilmKutusu.com üzerinden film izleme",
+              "authors": ["tamersariii"],
+              "tvTypes": ["Movie"],
+              "language": "tr",
+              "iconUrl": "https://filmkutusu.com/favicon.ico",
+              "apiVersion": ${API_VERSION},
+              "status": 1,
+              "repositoryUrl": "https://github.com/tamersariii/xcloudstream_tr_repo"
+            },
+            {
+              "internalName": "HDFilmizlesende",
+              "url": "https://raw.githubusercontent.com/tamersariii/xcloudstream_tr_repo/builds/HDFilmizlesende.cs",
+              "version": 1,
+              "description": "HDFilmizlesende.com üzerinden film ve dizi izleme",
+              "authors": ["tamersariii"],
+              "tvTypes": ["Movie", "TvSeries"],
+              "language": "tr",
+              "iconUrl": "https://hdfilmizlesende.com/favicon.ico",
+              "apiVersion": ${API_VERSION},
+              "status": 1,
+              "repositoryUrl": "https://github.com/tamersariii/xcloudstream_tr_repo"
+            }
+          ]
           EOF
           echo "=== builds/plugins.json oluşturuldu (API v${API_VERSION}) ==="
           cat builds/plugins.json
@@ -148,6 +148,9 @@ jobs:
         run: |
           echo "=== builds/ içeriği ==="
           ls -la builds/
+          echo ""
+          echo "=== plugins.json ilk 5 satır ==="
+          head -5 builds/plugins.json
 
       - name: Deploy to builds branch
         if: success()

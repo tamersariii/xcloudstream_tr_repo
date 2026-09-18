@@ -5,7 +5,6 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-# Builds dalına push edebilmek için gerekli izinler
 permissions:
   contents: write
 
@@ -14,7 +13,6 @@ env:
 
 jobs:
   build:
-    # Ubuntu 24.04, mevcut en kararlı sürümdür
     runs-on: ubuntu-24.04
 
     steps:
@@ -33,7 +31,19 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build all plugins
-        run: ./gradlew makePluginsJson
+        run: ./gradlew make makePluginsJson
+
+      - name: Verify builds directory
+        run: |
+          echo "=== builds/ klasörü içeriği ==="
+          if [ -d "builds" ]; then
+            ls -la builds/
+          else
+            echo "HATA: builds klasörü oluşturulmamış!"
+            find . -name "*.cs" -type f
+            find . -name "plugins.json" -type f
+            exit 1
+          fi
 
       - name: Deploy to builds branch
         uses: peaceiris/actions-gh-pages@v4
@@ -42,6 +52,7 @@ jobs:
           publish_dir: ./builds
           publish_branch: builds
           force_orphan: true
+          enable_jekyll: false
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
           commit_message: 'Build: ${{ github.event.head_commit.message }}'

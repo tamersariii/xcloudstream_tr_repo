@@ -10,9 +10,11 @@ buildscript {
         maven("https://jitpack.io")
     }
     dependencies {
+        // AGP 8.7.3 → minimum Gradle 8.9 gerektirir
         classpath("com.android.tools.build:gradle:8.7.3")
+        // CloudStream Gradle eklentisi (makePluginsJson vb. görevleri sağlar)
         classpath("com.github.recloudstream:gradle:-SNAPSHOT")
-        // ✅ KOTLIN 2.4.0 — CloudStream kütüphanesinin metadata'sını okuyabilmek için zorunlu
+        // Kotlin 2.4.0 → CloudStream kütüphanesinin 2.4.0 metadata'sını okuyabilir
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.0")
     }
 }
@@ -25,6 +27,7 @@ allprojects {
     }
 }
 
+// extensions.getByName() "Any" döndüğü için açıkça cast edip .apply() ile lambda'yı çalıştırıyoruz.
 fun Project.cloudstream(configuration: CloudstreamExtension.() -> Unit) =
     (extensions.getByName("cloudstream") as CloudstreamExtension).apply(configuration)
 
@@ -32,6 +35,7 @@ fun Project.android(configuration: BaseExtension.() -> Unit) =
     (extensions.getByName("android") as BaseExtension).apply(configuration)
 
 subprojects {
+    // Tüm alt modüllere gerekli eklentileri uygula
     apply(plugin = "com.android.library")
     apply(plugin = "kotlin-android")
     apply(plugin = "com.lagradost.cloudstream3.gradle")
@@ -41,6 +45,7 @@ subprojects {
     }
 
     android {
+        // Her modül için otomatik namespace (örn: com.xcloudstream.hdfilmcehennemi)
         namespace = "com.xcloudstream.${project.name.lowercase().replace("-", "")}"
         compileSdkVersion(35)
 
@@ -70,11 +75,17 @@ subprojects {
         val cloudstream by configurations
         val implementation by configurations
 
+        // CloudStream API stub'ı (derleme zamanı için)
         cloudstream("com.lagradost:cloudstream3:pre-release")
+
         implementation(kotlin("stdlib"))
         implementation("com.github.Blatzar:NiceHttp:0.4.11")
         implementation("org.jsoup:jsoup:1.18.3")
+        // Jackson sürümünü 2.13.1'in üzerine çıkarmayın, eski Android cihazlarda uyumsuzluk yaratır.
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
+
+        // ✅ JSpecify anotasyonları — CloudStream kütüphanesinin @Nullable anotasyonları için gerekli
+        implementation("org.jspecify:jspecify:1.0.0")
     }
 }
 

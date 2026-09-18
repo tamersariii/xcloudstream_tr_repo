@@ -1,4 +1,4 @@
-name: Build Plugins
+name: Build CloudStream Plugins (Beta)
 
 on:
   push:
@@ -44,7 +44,10 @@ jobs:
 
       - name: Generate plugins.json
         run: |
-          cat > builds/plugins.json << 'EOF'
+          # CloudStream Beta sürümü için API versiyonu
+          API_VERSION=4
+          
+          cat > builds/plugins.json << EOF
           {
             "name": "xCloudStream TR Repo",
             "description": "Türkçe film ve dizi siteleri için CloudStream eklentileri",
@@ -59,7 +62,7 @@ jobs:
                 "tvTypes": ["Movie", "TvSeries"],
                 "language": "tr",
                 "iconUrl": "https://www.hdfilmcehennemi.nl/favicon.ico",
-                "apiVersion": 1,
+                "apiVersion": ${API_VERSION},
                 "status": 1
               },
               {
@@ -71,7 +74,7 @@ jobs:
                 "tvTypes": ["Movie"],
                 "language": "tr",
                 "iconUrl": "https://www.fullhdfilmizlesene.now/favicon.ico",
-                "apiVersion": 1,
+                "apiVersion": ${API_VERSION},
                 "status": 1
               },
               {
@@ -83,7 +86,7 @@ jobs:
                 "tvTypes": ["Movie", "TvSeries"],
                 "language": "tr",
                 "iconUrl": "https://filmmakinesi.to/favicon.ico",
-                "apiVersion": 1,
+                "apiVersion": ${API_VERSION},
                 "status": 1
               },
               {
@@ -95,7 +98,7 @@ jobs:
                 "tvTypes": ["Movie"],
                 "language": "tr",
                 "iconUrl": "https://ultrafilmizle.org/favicon.ico",
-                "apiVersion": 1,
+                "apiVersion": ${API_VERSION},
                 "status": 1
               },
               {
@@ -107,7 +110,7 @@ jobs:
                 "tvTypes": ["Movie", "TvSeries"],
                 "language": "tr",
                 "iconUrl": "https://www.hdfilmizle.vip/favicon.ico",
-                "apiVersion": 1,
+                "apiVersion": ${API_VERSION},
                 "status": 1
               },
               {
@@ -119,7 +122,7 @@ jobs:
                 "tvTypes": ["Movie"],
                 "language": "tr",
                 "iconUrl": "https://filmkutusu.com/favicon.ico",
-                "apiVersion": 1,
+                "apiVersion": ${API_VERSION},
                 "status": 1
               },
               {
@@ -131,13 +134,13 @@ jobs:
                 "tvTypes": ["Movie", "TvSeries"],
                 "language": "tr",
                 "iconUrl": "https://hdfilmizlesende.com/favicon.ico",
-                "apiVersion": 1,
+                "apiVersion": ${API_VERSION},
                 "status": 1
               }
             ]
           }
           EOF
-          echo "=== builds/plugins.json oluşturuldu ==="
+          echo "=== builds/plugins.json oluşturuldu (API v${API_VERSION}) ==="
           cat builds/plugins.json
 
       - name: Verify builds directory

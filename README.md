@@ -94,38 +94,6 @@ Hata Ayıklama
 ```bash
 adb logcat -v brief | grep -i "cloudstream\|HDFilmCehennemi"
 ```
-
----
-
-📁 Proje Yapısı
-
-```
-xcloudstream_tr_repo/
-├── .github/workflows/build.yml       # GitHub Actions CI
-├── gradle/wrapper/                   # Gradle Wrapper dosyaları
-├── HDFilmCehennemi/                  # Her site için bir klasör
-│   ├── build.gradle.kts
-│   └── src/main/
-│       ├── AndroidManifest.xml
-│       ├── kotlin/com/xcloudstream/HDFilmCehennemi/
-│       │   ├── HDFilmCehennemiPlugin.kt
-│       │   └── HDFilmCehennemiProvider.kt
-│       └── res/values/strings.xml
-├── FullHDFilmizlesene/
-├── FilmMakinesi/
-├── UltraFilmizle/
-├── 720izle/
-├── HDFilmizle/
-├── FilmKutusu/
-├── HDFilmizlesende/
-├── build.gradle.kts                  # Kök Gradle dosyası
-├── settings.gradle.kts               # Modülleri içerir
-├── gradle.properties
-├── repo.json                         # CloudStream depo tanımı
-├── .gitignore
-└── README.md
-```
-
 ---
 
 🔄 GitHub Actions ile Otomatik Derleme

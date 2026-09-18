@@ -1,22 +1,19 @@
-name: Build Plugins
+name: Diagnose Build
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
-  workflow_dispatch:
-
-permissions:
-  contents: write
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
-  build:
+  diagnose:
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
@@ -27,58 +24,34 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Grant execute permission for gradlew
+      - name: Grant execute permission
         run: chmod +x gradlew
 
-      - name: Clean previous builds
-        run: ./gradlew clean
+      - name: TEST A - Compile only HDFilmCehennemi
+        continue-on-error: true
+        run: ./gradlew :HDFilmCehennemi:assembleDebug --stacktrace --console=plain 2>&1 | tail -80
 
-      - name: Build all plugins
-        run: ./gradlew make makePluginsJson --stacktrace
+      - name: TEST B - Run make on HDFilmCehennemi
+        continue-on-error: true
+        run: ./gradlew :HDFilmCehennemi:make --info --console=plain 2>&1 | tail -120
 
-      - name: Verify builds directory
+      - name: TEST C - Show all files
         if: always()
         run: |
-          echo "=========================================="
-          echo "=== KÖK DİZİN ==="
-          ls -la
+          echo "=== HDFilmCehennemi/build/ ==="
+          find HDFilmCehennemi/build -type f 2>/dev/null | head -40 || echo "YOK"
           echo ""
-          echo "=========================================="
-          echo "=== builds/ KLASÖRÜ ==="
-          ls -la builds/ 2>/dev/null || echo "builds/ YOK"
+          echo "=== Tüm .cs ==="
+          find . -name "*.cs" 2>/dev/null || echo "YOK"
           echo ""
-          echo "=========================================="
-          echo "=== TÜM .cs DOSYALARI ==="
-          find . -name "*.cs" -type f 2>/dev/null || echo ".cs YOK"
+          echo "=== Tüm .jar (build altında) ==="
+          find . -path "*/build/*" -name "*.jar" 2>/dev/null || echo "YOK"
           echo ""
-          echo "=========================================="
-          echo "=== TÜM plugins.json ==="
-          find . -name "plugins.json" -type f 2>/dev/null
+          echo "=== Kotlin kaynak dosyaları ==="
+          find . -name "*.kt" -not -path "*/build/*" 2>/dev/null
           echo ""
-          echo "=== build/plugins.json içeriği ==="
-          cat build/plugins.json 2>/dev/null || echo "yok"
+          echo "=== AndroidManifest.xml dosyaları ==="
+          find . -name "AndroidManifest.xml" -not -path "*/build/*" 2>/dev/null
           echo ""
-          echo "=========================================="
-          echo "=== GRADLE MODÜLLERİ ==="
-          ./gradlew projects --console=plain 2>&1 | head -40
-
-      - name: Check builds exists
-        run: |
-          if [ ! -d "builds" ]; then
-            echo "❌ builds/ oluşmadı!"
-            exit 1
-          fi
-          echo "✅ builds/ mevcut"
-
-      - name: Deploy to builds branch
-        if: success()
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./builds
-          publish_branch: builds
-          force_orphan: true
-          enable_jekyll: false
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'Build: ${{ github.event.head_commit.message }}'
+          echo "=== strings.xml dosyaları ==="
+          find . -name "strings.xml" -not -path "*/build/*" 2>/dev/null

@@ -2,6 +2,7 @@ package com.xcloudstream.FilmMakinesi
 
 import com.lagradost.cloudstream3.*
 import com.lagradost.cloudstream3.utils.ExtractorLink
+import com.lagradost.cloudstream3.utils.ExtractorLinkType
 import com.lagradost.cloudstream3.utils.Qualities
 import org.jsoup.nodes.Element
 
@@ -83,14 +84,14 @@ class FilmMakinesiProvider : MainAPI() {
             if (src.isNotEmpty()) {
                 found = true
                 callback.invoke(
-                    newExtractorLink(
+                    ExtractorLink(
                         source = this.name,
                         name = "FilmMakinesi",
-                        url = fixUrl(src)
-                    ) {
-                        this.quality = Qualities.Unknown.value
-                        this.referer = mainUrl
-                    }
+                        url = fixUrl(src),
+                        referer = mainUrl,
+                        quality = Qualities.Unknown.value,
+                        type = ExtractorLinkType.VIDEO
+                    )
                 )
             }
         }

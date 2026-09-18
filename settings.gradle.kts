@@ -1,7 +1,7 @@
 rootProject.name = "xcloudstream_tr_repo"
 
 // Kök dizindeki tüm alt klasörleri otomatik olarak modül olarak dahil et.
-// Bu sayede yeni bir eklenti klasörü oluşturduğunuzda otomatik olarak tanınır.
+// 720izle klasörü silindiği için otomatik olarak listeden çıkar.
 File(rootDir, ".").eachDir { dir ->
     if (File(dir, "build.gradle.kts").exists()) {
         include(dir.name)

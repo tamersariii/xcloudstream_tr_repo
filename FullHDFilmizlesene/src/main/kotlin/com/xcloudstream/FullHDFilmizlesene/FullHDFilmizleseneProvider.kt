@@ -22,14 +22,17 @@ class FullHDFilmizleseneProvider : MainAPI() {
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
         val url = if (request.data.isEmpty()) "$mainUrl/page/$page" else "$mainUrl/${request.data}/page/$page"
         val document = app.get(url).document
-        val items = document.select("div.film-box, article.film").mapNotNull { it.toSearchResult() }
+        val items = document.select("div.film-box, article.film, div.film-item, li.film")
+            .mapNotNull { it.toSearchResult() }
         return newHomePageResponse(request, items, hasNext = true)
     }
 
     private fun Element.toSearchResult(): SearchResponse? {
-        val title = this.selectFirst("h2 a, h3 a, .film-title")?.text() ?: return null
+        val title = this.selectFirst("h2 a, h3 a, .film-title, .title a")?.text()?.trim() ?: return null
         val href = fixUrl(this.selectFirst("a")?.attr("href") ?: return null)
-        val poster = this.selectFirst("img")?.let { fixUrlNull(it.attr("src") ?: it.attr("data-src")) }
+        val poster = this.selectFirst("img")?.let {
+            fixUrlNull(it.attr("src").ifEmpty { it.attr("data-src") })
+        }
 
         return newMovieSearchResponse(title, href, TvType.Movie) {
             this.posterUrl = poster
@@ -38,15 +41,16 @@ class FullHDFilmizleseneProvider : MainAPI() {
 
     override suspend fun search(query: String): List<SearchResponse> {
         val document = app.get("$mainUrl/arama?q=$query").document
-        return document.select("div.film-box, article.film").mapNotNull { it.toSearchResult() }
+        return document.select("div.film-box, article.film, div.film-item, li.film")
+            .mapNotNull { it.toSearchResult() }
     }
 
     override suspend fun load(url: String): LoadResponse? {
         val document = app.get(url).document
-        val title = document.selectFirst("h1")?.text() ?: return null
-        val poster = document.selectFirst("div.film-poster img, .poster img")?.attr("src")
-        val description = document.selectFirst("div.film-aciklama, .description")?.text()
-        val year = document.selectFirst("span.film-yil, .year")?.text()?.toIntOrNull()
+        val title = document.selectFirst("h1, .film-title")?.text()?.trim() ?: return null
+        val poster = document.selectFirst("div.film-poster img, .poster img, .film-cover img")?.attr("src")
+        val description = document.selectFirst("div.film-aciklama, .description, .ozet, .film-ozet")?.text()?.trim()
+        val year = document.selectFirst("span.film-yil, .year, .film-year")?.text()?.trim()?.toIntOrNull()
 
         return newMovieLoadResponse(title, url, TvType.Movie, url) {
             this.posterUrl = fixUrlNull(poster)
@@ -62,9 +66,11 @@ class FullHDFilmizleseneProvider : MainAPI() {
         callback: (ExtractorLink) -> Unit
     ): Boolean {
         val document = app.get(data).document
+        var found = false
         document.select("iframe").forEach { iframe ->
-            val src = iframe.attr("src")
+            val src = iframe.attr("src").ifEmpty { iframe.attr("data-src") }
             if (src.isNotEmpty()) {
+                found = true
                 callback.invoke(
                     newExtractorLink(
                         source = this.name,
@@ -77,6 +83,6 @@ class FullHDFilmizleseneProvider : MainAPI() {
                 )
             }
         }
-        return true
+        return found
     }
 }

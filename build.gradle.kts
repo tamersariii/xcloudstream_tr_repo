@@ -1,7 +1,6 @@
 import com.android.build.gradle.BaseExtension
 import com.lagradost.cloudstream3.gradle.CloudstreamExtension
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
@@ -10,9 +9,9 @@ buildscript {
         maven("https://jitpack.io")
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.7.3")
+        classpath("com.android.tools.build:gradle:7.0.4")
         classpath("com.github.recloudstream:gradle:-SNAPSHOT")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21")
     }
 }
 
@@ -24,12 +23,11 @@ allprojects {
     }
 }
 
-// CloudStream ve Android extension'larına kısayol erişimi
 fun Project.cloudstream(configuration: CloudstreamExtension.() -> Unit) =
-    extensions.getByName("cloudstream").configuration()
+    extensions.getByName<CloudstreamExtension>("cloudstream").configuration()
 
 fun Project.android(configuration: BaseExtension.() -> Unit) =
-    extensions.getByName("android").configuration()
+    extensions.getByName<BaseExtension>("android").configuration()
 
 subprojects {
     apply(plugin = "com.android.library")
@@ -41,34 +39,30 @@ subprojects {
     }
 
     android {
-        namespace = "com.xcloudstream.${project.name.lowercase().replace("-", "")}"
-        compileSdkVersion(35)
-
         defaultConfig {
             minSdk = 21
-            targetSdk = 35
+            compileSdkVersion(33)
+            targetSdk = 33
         }
-
         compileOptions {
             sourceCompatibility = JavaVersion.VERSION_1_8
             targetCompatibility = JavaVersion.VERSION_1_8
         }
-    }
-
-    tasks.withType<KotlinJvmCompile> {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_1_8)
-            freeCompilerArgs.addAll(
-                "-Xno-call-assertions",
-                "-Xno-param-assertions",
-                "-Xno-receiver-assertions"
-            )
+        tasks.withType<KotlinCompile> {
+            kotlinOptions {
+                jvmTarget = "1.8"
+                freeCompilerArgs = freeCompilerArgs + listOf(
+                    "-Xno-call-assertions",
+                    "-Xno-param-assertions",
+                    "-Xno-receiver-assertions"
+                )
+            }
         }
     }
 
     dependencies {
-        val cloudstream by configurations
         val implementation by configurations
+        val cloudstream by configurations
 
         cloudstream("com.lagradost:cloudstream3:pre-release")
         implementation(kotlin("stdlib"))
@@ -79,5 +73,5 @@ subprojects {
 }
 
 tasks.register("clean", Delete::class) {
-    delete(rootProject.layout.buildDirectory)
+    delete(rootProject.buildDir)
 }

@@ -226,14 +226,6 @@ Sorun: Build başarısız oluyor
 
 Çözüm: GitHub Actions sekmesinden hata loglarını inceleyin. Genellikle Kotlin sürümü veya AGP uyumsuzluğundan kaynaklanır.
 
----
-
-📄 Lisans
-
-Bu proje MIT Lisansı altında lisanslanmıştır. Detaylar için LICENSE dosyasına bakın.
-
----
-
 🙏 Teşekkürler
 
 · CloudStream geliştiricilerine
